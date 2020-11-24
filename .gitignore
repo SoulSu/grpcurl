@@ -1,2 +1,3 @@
 dist/
 VERSION
+cmd/grpcurl/grpcurl

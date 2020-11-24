@@ -1,8 +1,9 @@
-module github.com/fullstorydev/grpcurl
+module github.com/SoulSu/grpcurl
 
 go 1.13
 
 require (
+	github.com/fullstorydev/grpcurl v1.7.0
 	github.com/golang/protobuf v1.3.5
 	github.com/gordonklaus/ineffassign v0.0.0-20200309095847-7953dde2c7bf // indirect
 	github.com/goreleaser/goreleaser v0.134.0 // indirect
