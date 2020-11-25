@@ -410,6 +410,7 @@ func RequestParserAndFormatterFor(format Format, descSource DescriptorSource, em
 // until the call to InvokeRPC completes.
 type DefaultEventHandler struct {
 	Out       io.Writer
+	Debug     io.Writer
 	Formatter Formatter
 	// 0 = default
 	// 1 = verbose
@@ -449,33 +450,33 @@ func (h *DefaultEventHandler) OnResolveMethod(md *desc.MethodDescriptor) {
 	if h.VerbosityLevel > 0 {
 		txt, err := GetDescriptorText(md, nil)
 		if err == nil {
-			fmt.Fprintf(h.Out, "\nResolved method descriptor:\n%s\n", txt)
+			fmt.Fprintf(h.Debug, "\nResolved method descriptor:\n%s\n", txt)
 		}
 	}
 }
 
 func (h *DefaultEventHandler) OnSendHeaders(md metadata.MD) {
 	if h.VerbosityLevel > 0 {
-		fmt.Fprintf(h.Out, "\nRequest metadata to send:\n%s\n", MetadataToString(md))
+		fmt.Fprintf(h.Debug, "\nRequest metadata to send:\n%s\n", MetadataToString(md))
 	}
 }
 
 func (h *DefaultEventHandler) OnReceiveHeaders(md metadata.MD) {
 	if h.VerbosityLevel > 0 {
-		fmt.Fprintf(h.Out, "\nResponse headers received:\n%s\n", MetadataToString(md))
+		fmt.Fprintf(h.Debug, "\nResponse headers received:\n%s\n", MetadataToString(md))
 	}
 }
 
 func (h *DefaultEventHandler) OnReceiveResponse(resp proto.Message) {
 	h.NumResponses++
 	if h.VerbosityLevel > 1 {
-		fmt.Fprintf(h.Out, "\nEstimated response size: %d bytes\n", proto.Size(resp))
+		fmt.Fprintf(h.Debug, "\nEstimated response size: %d bytes\n", proto.Size(resp))
 	}
 	if h.VerbosityLevel > 0 {
-		fmt.Fprint(h.Out, "\nResponse contents:\n")
+		fmt.Fprint(h.Debug, "\nResponse contents:\n")
 	}
 	if respStr, err := h.Formatter(resp); err != nil {
-		fmt.Fprintf(h.Out, "Failed to format response message %d: %v\n", h.NumResponses, err)
+		fmt.Fprintf(h.Debug, "Failed to format response message %d: %v\n", h.NumResponses, err)
 	} else {
 		fmt.Fprintln(h.Out, respStr)
 	}
@@ -484,7 +485,7 @@ func (h *DefaultEventHandler) OnReceiveResponse(resp proto.Message) {
 func (h *DefaultEventHandler) OnReceiveTrailers(stat *status.Status, md metadata.MD) {
 	h.Status = stat
 	if h.VerbosityLevel > 0 {
-		fmt.Fprintf(h.Out, "\nResponse trailers received:\n%s\n", MetadataToString(md))
+		fmt.Fprintf(h.Debug, "\nResponse trailers received:\n%s\n", MetadataToString(md))
 	}
 }
 

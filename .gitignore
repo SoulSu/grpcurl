@@ -1,3 +1,5 @@
 dist/
 VERSION
 cmd/grpcurl/grpcurl
+
+.idea
